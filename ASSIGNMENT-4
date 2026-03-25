@@ -1,0 +1,263 @@
+/* =========================================================
+QUESTION 1
+Queue using Array
+========================================================= */
+
+#include <stdio.h>
+#define MAX 100
+
+int queue[MAX];
+int front = -1, rear = -1;
+
+void enqueue(int value) {
+    if (rear == MAX - 1)
+        printf("Queue Overflow\n");
+    else {
+        if (front == -1)
+            front = 0;
+        rear++;
+        queue[rear] = value;
+        printf("Inserted: %d\n", value);
+    }
+}
+
+void dequeue() {
+    if (front == -1 || front > rear)
+        printf("Queue Underflow\n");
+    else {
+        printf("Deleted: %d\n", queue[front]);
+        front++;
+    }
+}
+
+void peek() {
+    if (front == -1 || front > rear)
+        printf("Queue is Empty\n");
+    else
+        printf("Front Element: %d\n", queue[front]);
+}
+
+void display() {
+    if (front == -1 || front > rear)
+        printf("Queue is Empty\n");
+    else {
+        printf("Queue Elements:\n");
+        for (int i = front; i <= rear; i++)
+            printf("%d ", queue[i]);
+        printf("\n");
+    }
+}
+
+/* =========================================================
+QUESTION 2
+Queue using Linked List
+========================================================= */
+
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* next;
+};
+
+struct node *front1 = NULL, *rear1 = NULL;
+
+void enqueueLL(int value) {
+    struct node *temp = (struct node*)malloc(sizeof(struct node));
+    temp->data = value;
+    temp->next = NULL;
+
+    if (rear1 == NULL) {
+        front1 = rear1 = temp;
+    } else {
+        rear1->next = temp;
+        rear1 = temp;
+    }
+    printf("Inserted: %d\n", value);
+}
+
+void dequeueLL() {
+    if (front1 == NULL) {
+        printf("Queue Underflow\n");
+        return;
+    }
+    struct node *temp = front1;
+    printf("Deleted: %d\n", front1->data);
+    front1 = front1->next;
+
+    if (front1 == NULL)
+        rear1 = NULL;
+
+    free(temp);
+}
+
+void peekLL() {
+    if (front1 == NULL)
+        printf("Queue Empty\n");
+    else
+        printf("Front Element: %d\n", front1->data);
+}
+
+void displayLL() {
+    struct node *temp = front1;
+    printf("Queue Elements:\n");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+
+/* =========================================================
+QUESTION 3
+Palindrome using Queue
+========================================================= */
+
+#include <string.h>
+
+int isPalindrome(char str[]) {
+    int n = strlen(str);
+    char queue[100];
+    int front = 0, rear = -1;
+
+    for (int i = 0; i < n; i++)
+        queue[++rear] = str[i];
+
+    for (int i = 0; i < n; i++) {
+        if (str[i] != queue[rear--])
+            return 0;
+    }
+    return 1;
+}
+
+
+/* =========================================================
+QUESTION 4
+Circular Queue
+========================================================= */
+
+#define SIZE 5
+
+int cqueue[SIZE];
+int f = -1, r = -1;
+
+void enqueueC(int value) {
+    if ((r + 1) % SIZE == f) {
+        printf("Circular Queue Full\n");
+        return;
+    }
+    if (f == -1)
+        f = 0;
+
+    r = (r + 1) % SIZE;
+    cqueue[r] = value;
+}
+
+void dequeueC() {
+    if (f == -1) {
+        printf("Queue Empty\n");
+        return;
+    }
+
+    printf("Deleted: %d\n", cqueue[f]);
+
+    if (f == r)
+        f = r = -1;
+    else
+        f = (f + 1) % SIZE;
+}
+
+void displayC() {
+    if (f == -1) {
+        printf("Queue Empty\n");
+        return;
+    }
+
+    int i = f;
+    printf("Circular Queue:\n");
+    while (1) {
+        printf("%d ", cqueue[i]);
+        if (i == r)
+            break;
+        i = (i + 1) % SIZE;
+    }
+    printf("\n");
+}
+
+
+/* =========================================================
+QUESTION 5
+Stack using Two Queues
+========================================================= */
+
+int q1[100], q2[100];
+int frontq1 = -1, rearq1 = -1;
+int frontq2 = -1, rearq2 = -1;
+
+void enqueueQ1(int x) {
+    if (rearq1 == 99)
+        return;
+    if (frontq1 == -1)
+        frontq1 = 0;
+    q1[++rearq1] = x;
+}
+
+int dequeueQ1() {
+    if (frontq1 == -1)
+        return -1;
+    return q1[frontq1++];
+}
+
+void enqueueQ2(int x) {
+    if (rearq2 == 99)
+        return;
+    if (frontq2 == -1)
+        frontq2 = 0;
+    q2[++rearq2] = x;
+}
+
+int dequeueQ2() {
+    if (frontq2 == -1)
+        return -1;
+    return q2[frontq2++];
+}
+
+void push(int x) {
+    enqueueQ2(x);
+
+    while (frontq1 <= rearq1)
+        enqueueQ2(dequeueQ1());
+
+    while (frontq2 <= rearq2)
+        enqueueQ1(dequeueQ2());
+}
+
+void pop() {
+    if (frontq1 == -1 || frontq1 > rearq1)
+        printf("Stack Empty\n");
+    else
+        printf("Popped: %d\n", dequeueQ1());
+}
+
+void peekStack() {
+    if (frontq1 == -1 || frontq1 > rearq1)
+        printf("Stack Empty\n");
+    else
+        printf("Top Element: %d\n", q1[frontq1]);
+}
+
+void displayStack() {
+    if (frontq1 == -1)
+        printf("Stack Empty\n");
+    else {
+        printf("Stack Elements:\n");
+        for (int i = frontq1; i <= rearq1; i++)
+            printf("%d ", q1[i]);
+        printf("\n");
+    }
+}
+
+int isEmpty() {
+    return (frontq1 == -1 || frontq1 > rearq1);
+}
