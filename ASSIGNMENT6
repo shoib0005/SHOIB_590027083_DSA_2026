@@ -1,0 +1,298 @@
+/* ===================== PROGRAM 1 : BINARY SEARCH TREE ===================== */
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+struct Node* insertBST(struct Node* root, int data) {
+    if (root == NULL)
+        return createNode(data);
+
+    if (data < root->data)
+        root->left = insertBST(root->left, data);
+    else if (data > root->data)
+        root->right = insertBST(root->right, data);
+    else
+        printf("Duplicate value not allowed\n");
+
+    return root;
+}
+
+struct Node* findMin(struct Node* root) {
+    while (root->left != NULL)
+        root = root->left;
+    return root;
+}
+
+struct Node* deleteBST(struct Node* root, int key) {
+    if (root == NULL)
+        return root;
+
+    if (key < root->data)
+        root->left = deleteBST(root->left, key);
+    else if (key > root->data)
+        root->right = deleteBST(root->right, key);
+    else {
+        if (root->left == NULL && root->right == NULL) {
+            free(root);
+            return NULL;
+        }
+        else if (root->left == NULL) {
+            struct Node* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL) {
+            struct Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        struct Node* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteBST(root->right, temp->data);
+    }
+
+    return root;
+}
+
+void searchBST(struct Node* root, int key) {
+    if (root == NULL) {
+        printf("Element not found\n");
+        return;
+    }
+
+    if (root->data == key)
+        printf("Element found\n");
+    else if (key < root->data)
+        searchBST(root->left, key);
+    else
+        searchBST(root->right, key);
+}
+
+void inorderBST(struct Node* root) {
+    if (root != NULL) {
+        inorderBST(root->left);
+        printf("%d ", root->data);
+        inorderBST(root->right);
+    }
+}
+
+
+
+
+
+
+/* ===================== PROGRAM 2 : BINARY HEAP ===================== */
+
+#define MAX 100
+
+int heap[MAX];
+int size = 0;
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void heapifyUp(int index) {
+    int parent = (index - 1) / 2;
+
+    if (index > 0 && heap[parent] > heap[index]) {
+        swap(&heap[parent], &heap[index]);
+        heapifyUp(parent);
+    }
+}
+
+void insertHeap(int value) {
+    heap[size] = value;
+    heapifyUp(size);
+    size++;
+}
+
+void heapifyDown(int index) {
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+    int smallest = index;
+
+    if (left < size && heap[left] < heap[smallest])
+        smallest = left;
+
+    if (right < size && heap[right] < heap[smallest])
+        smallest = right;
+
+    if (smallest != index) {
+        swap(&heap[index], &heap[smallest]);
+        heapifyDown(smallest);
+    }
+}
+
+void deleteHeap() {
+    heap[0] = heap[size - 1];
+    size--;
+    heapifyDown(0);
+}
+
+void displayHeap() {
+    for (int i = 0; i < size; i++)
+        printf("%d ", heap[i]);
+    printf("\n");
+}
+
+
+
+
+
+
+/* ===================== PROGRAM 3 : PRIORITY QUEUE ===================== */
+
+int pheap[MAX];
+int psize = 0;
+
+void heapifyUpPQ(int index) {
+    int parent = (index - 1) / 2;
+
+    if (index > 0 && pheap[parent] > pheap[index]) {
+        swap(&pheap[parent], &pheap[index]);
+        heapifyUpPQ(parent);
+    }
+}
+
+void insertPQ(int value) {
+    pheap[psize] = value;
+    heapifyUpPQ(psize);
+    psize++;
+}
+
+void heapifyDownPQ(int index) {
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+    int smallest = index;
+
+    if (left < psize && pheap[left] < pheap[smallest])
+        smallest = left;
+
+    if (right < psize && pheap[right] < pheap[smallest])
+        smallest = right;
+
+    if (smallest != index) {
+        swap(&pheap[index], &pheap[smallest]);
+        heapifyDownPQ(smallest);
+    }
+}
+
+void deletePQ() {
+    printf("Deleted: %d\n", pheap[0]);
+    pheap[0] = pheap[psize - 1];
+    psize--;
+    heapifyDownPQ(0);
+}
+
+void peekPQ() {
+    printf("Top Priority: %d\n", pheap[0]);
+}
+
+void displayPQ() {
+    for (int i = 0; i < psize; i++)
+        printf("%d ", pheap[i]);
+    printf("\n");
+}
+
+
+
+
+
+
+/* ===================== MAIN MENU ===================== */
+
+int main() {
+    int choice, value;
+    struct Node* root = NULL;
+
+    while(1) {
+        printf("\n1.BST Insert");
+        printf("\n2.BST Delete");
+        printf("\n3.BST Search");
+        printf("\n4.BST Inorder");
+        printf("\n5.Heap Insert");
+        printf("\n6.Heap Delete");
+        printf("\n7.Heap Display");
+        printf("\n8.PQ Insert");
+        printf("\n9.PQ Delete");
+        printf("\n10.PQ Peek");
+        printf("\n11.PQ Display");
+        printf("\n12.Exit");
+        printf("\nEnter Choice: ");
+        scanf("%d",&choice);
+
+        switch(choice) {
+
+            case 1:
+                scanf("%d",&value);
+                root = insertBST(root,value);
+                break;
+
+            case 2:
+                scanf("%d",&value);
+                root = deleteBST(root,value);
+                break;
+
+            case 3:
+                scanf("%d",&value);
+                searchBST(root,value);
+                break;
+
+            case 4:
+                inorderBST(root);
+                break;
+
+            case 5:
+                scanf("%d",&value);
+                insertHeap(value);
+                break;
+
+            case 6:
+                deleteHeap();
+                break;
+
+            case 7:
+                displayHeap();
+                break;
+
+            case 8:
+                scanf("%d",&value);
+                insertPQ(value);
+                break;
+
+            case 9:
+                deletePQ();
+                break;
+
+            case 10:
+                peekPQ();
+                break;
+
+            case 11:
+                displayPQ();
+                break;
+
+            case 12:
+                exit(0);
+        }
+    }
+
+    return 0;
+}
