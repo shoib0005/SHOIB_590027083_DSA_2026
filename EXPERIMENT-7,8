@@ -1,0 +1,279 @@
+--------------------------------------------------
+1. Write a C program to implement a hash function on student SAP-ID and categorize them into their 10 families based on the last three digits.
+--------------------------------------------------
+
+#include<stdio.h>
+
+int main()
+{
+    int sap,lastThree,family;
+
+    printf("Enter SAP ID: ");
+    scanf("%d",&sap);
+
+    lastThree = sap % 1000;
+    family = lastThree % 10;
+
+    printf("Student belongs to family: %d",family);
+
+    return 0;
+}
+
+
+--------------------------------------------------
+2. Write a C program to implement a Hash table using arrays. Perform Insert, Delete and Search operations.
+--------------------------------------------------
+
+#include<stdio.h>
+#define SIZE 10
+
+int hashTable[SIZE];
+
+int hashFunction(int key)
+{
+    return key % SIZE;
+}
+
+void insert(int key)
+{
+    int index = hashFunction(key);
+
+    if(hashTable[index] != -1)
+        printf("Collision occurred\n");
+    else
+        hashTable[index] = key;
+}
+
+void search(int key)
+{
+    int index = hashFunction(key);
+
+    if(hashTable[index] == key)
+        printf("Element Found\n");
+    else
+        printf("Element Not Found\n");
+}
+
+void delete(int key)
+{
+    int index = hashFunction(key);
+
+    if(hashTable[index] == key)
+    {
+        hashTable[index] = -1;
+        printf("Element Deleted\n");
+    }
+    else
+        printf("Element Not Found\n");
+}
+
+void display()
+{
+    int i;
+
+    for(i=0;i<SIZE;i++)
+        printf("%d -> %d\n",i,hashTable[i]);
+}
+
+int main()
+{
+    int i;
+
+    for(i=0;i<SIZE;i++)
+        hashTable[i] = -1;
+
+    insert(23);
+    insert(43);
+
+    display();
+
+    search(23);
+
+    delete(23);
+
+    display();
+
+    return 0;
+}
+
+
+--------------------------------------------------
+3. Write a C program to represent graph using adjacency matrix and find in-degree and out-degree.
+--------------------------------------------------
+
+#include<stdio.h>
+
+int main()
+{
+    int n,i,j,vertex;
+    int graph[20][20];
+    int indegree=0,outdegree=0;
+
+    printf("Enter number of vertices: ");
+    scanf("%d",&n);
+
+    printf("Enter adjacency matrix:\n");
+
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            scanf("%d",&graph[i][j]);
+
+    printf("Adjacency Matrix:\n");
+
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<n;j++)
+            printf("%d ",graph[i][j]);
+        printf("\n");
+    }
+
+    printf("Enter vertex: ");
+    scanf("%d",&vertex);
+
+    for(i=0;i<n;i++)
+    {
+        indegree += graph[i][vertex];
+        outdegree += graph[vertex][i];
+    }
+
+    printf("In-degree = %d\n",indegree);
+    printf("Out-degree = %d\n",outdegree);
+
+    return 0;
+}
+
+
+--------------------------------------------------
+4. Write a C program to determine whether graph is undirected or not.
+--------------------------------------------------
+
+#include<stdio.h>
+
+int main()
+{
+    int n,i,j,flag=1;
+    int graph[20][20];
+
+    printf("Enter vertices: ");
+    scanf("%d",&n);
+
+    printf("Enter adjacency matrix:\n");
+
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            scanf("%d",&graph[i][j]);
+
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            if(graph[i][j] != graph[j][i])
+                flag = 0;
+
+    if(flag)
+        printf("Undirected Graph");
+    else
+        printf("Directed Graph");
+
+    return 0;
+}
+
+
+--------------------------------------------------
+5. Write a C program to perform Breadth First Search (BFS)
+--------------------------------------------------
+
+#include<stdio.h>
+
+int queue[20],front=-1,rear=-1;
+int visited[20];
+
+void bfs(int graph[20][20],int n,int start)
+{
+    int i;
+
+    queue[++rear] = start;
+    visited[start] = 1;
+
+    while(front != rear)
+    {
+        start = queue[++front];
+        printf("%d ",start);
+
+        for(i=0;i<n;i++)
+        {
+            if(graph[start][i] && !visited[i])
+            {
+                queue[++rear] = i;
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+int main()
+{
+    int graph[20][20];
+    int n,i,j,start;
+
+    printf("Enter vertices: ");
+    scanf("%d",&n);
+
+    printf("Enter adjacency matrix:\n");
+
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            scanf("%d",&graph[i][j]);
+
+    printf("Enter starting vertex: ");
+    scanf("%d",&start);
+
+    bfs(graph,n,start);
+
+    return 0;
+}
+
+
+--------------------------------------------------
+6. Write a C program to perform Depth First Search (DFS)
+--------------------------------------------------
+
+#include<stdio.h>
+
+int visited[20];
+
+void dfs(int graph[20][20],int n,int start)
+{
+    int i;
+
+    printf("%d ",start);
+    visited[start] = 1;
+
+    for(i=0;i<n;i++)
+        if(graph[start][i] && !visited[i])
+            dfs(graph,n,i);
+}
+
+int main()
+{
+    int graph[20][20];
+    int n,i,j,start;
+
+    printf("Enter vertices: ");
+    scanf("%d",&n);
+
+    printf("Enter adjacency matrix:\n");
+
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            scanf("%d",&graph[i][j]);
+
+    printf("Enter starting vertex: ");
+    scanf("%d",&start);
+
+    dfs(graph,n,start);
+
+    return 0;
+}
+
+--------------------------------------------------
+Assignment 7 Completed
+--------------------------------------------------
