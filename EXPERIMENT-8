@@ -1,0 +1,227 @@
+#include <stdio.h>
+
+/* ========== 1. BUBBLE SORT ========== */
+void bubbleSort() {
+    int n, comp=0, swaps=0;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    for(int i=0;i<n-1;i++) {
+        for(int j=0;j<n-i-1;j++) {
+            comp++;
+            if(a[j]>a[j+1]) {
+                int t=a[j]; a[j]=a[j+1]; a[j+1]=t;
+                swaps++;
+            }
+        }
+        printf("Pass %d: ",i+1);
+        for(int k=0;k<n;k++) printf("%d ",a[k]);
+        printf("\n");
+    }
+
+    printf("Sorted: ");
+    for(int i=0;i<n;i++) printf("%d ",a[i]);
+    printf("\nComparisons=%d Swaps=%d\n",comp,swaps);
+}
+
+/* ========== 2. SELECTION SORT ========== */
+void selectionSort() {
+    int n, comp=0, swaps=0;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    for(int i=0;i<n-1;i++) {
+        int min=i;
+        for(int j=i+1;j<n;j++) {
+            comp++;
+            if(a[j]<a[min]) min=j;
+        }
+        if(min!=i) {
+            int t=a[i]; a[i]=a[min]; a[min]=t;
+            swaps++;
+        }
+
+        printf("Pass %d: ",i+1);
+        for(int k=0;k<n;k++) printf("%d ",a[k]);
+        printf("\n");
+    }
+
+    printf("Sorted: ");
+    for(int i=0;i<n;i++) printf("%d ",a[i]);
+    printf("\nComparisons=%d Swaps=%d\n",comp,swaps);
+}
+
+/* ========== 3. INSERTION SORT ========== */
+void insertionSort() {
+    int n;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    for(int i=1;i<n;i++) {
+        int key=a[i], j=i-1;
+
+        while(j>=0 && a[j]>key) {
+            a[j+1]=a[j];
+            j--;
+        }
+        a[j+1]=key;
+
+        printf("Step %d: ",i);
+        for(int k=0;k<n;k++) printf("%d ",a[k]);
+        printf("\n");
+    }
+
+    printf("Sorted: ");
+    for(int i=0;i<n;i++) printf("%d ",a[i]);
+    printf("\n");
+}
+
+/* ========== 4. MERGE SORT ========== */
+void merge(int a[], int l, int m, int r) {
+    int i=l, j=m+1, k=0, temp[100];
+
+    while(i<=m && j<=r)
+        temp[k++] = (a[i]<a[j]) ? a[i++] : a[j++];
+
+    while(i<=m) temp[k++] = a[i++];
+    while(j<=r) temp[k++] = a[j++];
+
+    for(i=l,k=0;i<=r;i++,k++)
+        a[i]=temp[k];
+}
+
+void mergeSortFunc(int a[], int l, int r) {
+    if(l<r) {
+        int m=(l+r)/2;
+        mergeSortFunc(a,l,m);
+        mergeSortFunc(a,m+1,r);
+        merge(a,l,m,r);
+    }
+}
+
+void mergeSort() {
+    int n;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    mergeSortFunc(a,0,n-1);
+
+    printf("Sorted: ");
+    for(int i=0;i<n;i++) printf("%d ",a[i]);
+    printf("\n");
+}
+
+/* ========== 5. QUICK SORT ========== */
+int partition(int a[], int low, int high) {
+    int pivot=a[high], i=low-1;
+
+    for(int j=low;j<high;j++) {
+        if(a[j]<pivot) {
+            i++;
+            int t=a[i]; a[i]=a[j]; a[j]=t;
+        }
+    }
+
+    int t=a[i+1]; a[i+1]=a[high]; a[high]=t;
+    return i+1;
+}
+
+void quickSortFunc(int a[], int low, int high) {
+    if(low<high) {
+        int pi=partition(a,low,high);
+        quickSortFunc(a,low,pi-1);
+        quickSortFunc(a,pi+1,high);
+    }
+}
+
+void quickSort() {
+    int n;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    quickSortFunc(a,0,n-1);
+
+    printf("Sorted: ");
+    for(int i=0;i<n;i++) printf("%d ",a[i]);
+    printf("\n");
+}
+
+/* ========== 6. LINEAR SEARCH ========== */
+void linearSearch() {
+    int n,key,found=0;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    scanf("%d",&key);
+
+    for(int i=0;i<n;i++) {
+        if(a[i]==key) {
+            printf("Found at index %d\n",i);
+            found=1;
+        }
+    }
+
+    if(!found) printf("Not Found\n");
+}
+
+/* ========== 7. BINARY SEARCH ========== */
+int binarySearchFunc(int a[], int low, int high, int key) {
+    if(low<=high) {
+        int mid=(low+high)/2;
+
+        if(a[mid]==key) return mid;
+        else if(a[mid]>key) return binarySearchFunc(a,low,mid-1,key);
+        else return binarySearchFunc(a,mid+1,high,key);
+    }
+    return -1;
+}
+
+void binarySearch() {
+    int n,key;
+    scanf("%d",&n);
+    int a[n];
+
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+
+    scanf("%d",&key);
+
+    int res=binarySearchFunc(a,0,n-1,key);
+
+    if(res!=-1) printf("Found at index %d\n",res);
+    else printf("Not Found\n");
+}
+
+/* ========== MAIN MENU ========== */
+int main() {
+    int choice;
+
+    do {
+        printf("\n1.Bubble 2.Selection 3.Insertion 4.Merge 5.Quick 6.Linear 7.Binary 0.Exit\n");
+        scanf("%d",&choice);
+
+        switch(choice) {
+            case 1: bubbleSort(); break;
+            case 2: selectionSort(); break;
+            case 3: insertionSort(); break;
+            case 4: mergeSort(); break;
+            case 5: quickSort(); break;
+            case 6: linearSearch(); break;
+            case 7: binarySearch(); break;
+        }
+
+    } while(choice!=0);
+
+    return 0;
+}
